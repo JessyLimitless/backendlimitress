@@ -3,34 +3,57 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Simple Frontend</title>
+  <title>Serverless Greeting</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    input, button {
+      margin: 10px;
+      padding: 10px;
+      font-size: 16px;
+    }
+  </style>
 </head>
 <body>
-  <h1>Simple Example</h1>
-  <form id="dataForm">
-    <label for="name">Enter Your Name:</label>
-    <input type="text" id="name" name="name" required />
+  <h1>Say Hello!</h1>
+  <form id="greetForm">
+    <label for="name">Enter your name:</label>
+    <input type="text" id="name" name="name" placeholder="Enter your name" required>
     <button type="submit">Submit</button>
   </form>
-  <p id="response"></p>
-  <script>
-    document.getElementById("dataForm").addEventListener("submit", async (event) => {
-      event.preventDefault(); // Prevent page refresh
-      const name = document.getElementById("name").value;
+  <div id="response" style="margin-top: 20px; font-size: 18px;"></div>
 
-      // AWS Lambda Function URL
-      const url = "https://rixhrx6ahqjjkaljsgbecr3hae0szkai.lambda-url.ap-northeast-2.on.aws/";
+  <script>
+    const form = document.getElementById('greetForm');
+    const responseDiv = document.getElementById('response');
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const name = document.getElementById('name').value;
+      const url = 'https://<lambda-function-url>'; // Replace with your Lambda function URL
 
       try {
         const response = await fetch(url, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name }), // Send the name to the Lambda function
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include', // Include cookies and credentials
+          body: JSON.stringify({ name }),
         });
-        const result = await response.json();
-        document.getElementById("response").textContent = result.message;
+
+        if (response.ok) {
+          const data = await response.json();
+          responseDiv.textContent = data.message;
+        } else {
+          responseDiv.textContent = 'An error occurred: ' + response.statusText;
+        }
       } catch (error) {
-        document.getElementById("response").textContent = "Error: " + error.message;
+        responseDiv.textContent = 'Error: ' + error.message;
       }
     });
   </script>
