@@ -15,15 +15,17 @@
   <p id="response"></p>
   <script>
     document.getElementById("dataForm").addEventListener("submit", async (event) => {
-      event.preventDefault();
+      event.preventDefault(); // Prevent page refresh
       const name = document.getElementById("name").value;
-      const url = "YOUR_AWS_LAMBDA_FUNCTION_URL"; // Replace with the Lambda URL
+
+      // AWS Lambda Function URL
+      const url = "https://htunnshq3s75wahgcizc66mkx40osafl.lambda-url.ap-northeast-2.on.aws/";
 
       try {
         const response = await fetch(url, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name }),
+          body: JSON.stringify({ name }), // Send the name to the Lambda function
         });
         const result = await response.json();
         document.getElementById("response").textContent = result.message;
