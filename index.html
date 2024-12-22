@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simple Frontend</title>
+</head>
+<body>
+  <h1>Simple Example</h1>
+  <form id="dataForm">
+    <label for="name">Enter Your Name:</label>
+    <input type="text" id="name" name="name" required />
+    <button type="submit">Submit</button>
+  </form>
+  <p id="response"></p>
+  <script>
+    document.getElementById("dataForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const name = document.getElementById("name").value;
+      const url = "YOUR_AWS_LAMBDA_FUNCTION_URL"; // Replace with the Lambda URL
+
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name }),
+        });
+        const result = await response.json();
+        document.getElementById("response").textContent = result.message;
+      } catch (error) {
+        document.getElementById("response").textContent = "Error: " + error.message;
+      }
+    });
+  </script>
+</body>
+</html>
